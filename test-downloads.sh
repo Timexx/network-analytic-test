@@ -32,21 +32,4 @@ TARGET_DIR="/var/www/html/mychart"
 # Ergebnis-Datei in das Ziel-Verzeichnis kopieren
 cp "$RESULTS_FILE" "$TARGET_DIR"
 
-# Gnuplot-Skript erstellen
-#gnuplot_script="set terminal svg enhanced background rgb 'white';
-#                set output '$TARGET_DIR/results.svg';
-#                set boxwidth 1;
-#                set style fill solid;
-#                set yrange [-0.1:1.1];
-#                set xlabel 'Zeitstempel';
-#                set ylabel 'Download-Status';
-#                set xdata time;
-#                set timefmt '%Y-%m-%d %H:%M:%S';
-#                set format x '%d-%m %H:%M';
-#                plot '$RESULTS_FILE' using 1:2:(0.4) with boxes lc rgb 'blue' notitle"
-
-# Gnuplot aufrufen und Diagramm erstellen
-#gnuplot -e "$gnuplot_script"
-
-#echo "Diagramm wurde erstellt und unter $TARGET_DIR/results.svg gespeichert."
 echo "Daten generiert und transferiert"
