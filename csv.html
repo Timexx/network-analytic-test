@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Verzeichnis anzeigen</title>
+	<!-- Material Design-Stile -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://unpkg.com/@material/top-app-bar@0.43.0/dist/mdc.top-app-bar.min.css">
+</head>
+<style>
+		.code-editor {
+			background-color: #272822;
+			color: #F8F8F2;
+			font-family: monospace;
+			font-size: 14px;
+			height: 50em!important;
+			padding: 10px;
+			border-radius: 6px;
+		}
+
+		.material-button {
+			display: inline-block;
+			position: relative;
+			padding: 0 16px;
+			height: 36px;
+			line-height: 36px;
+			font-size: 14px;
+			font-weight: 500;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			color: #fff;
+			background-color: #2196f3;
+			border-radius: 2px;
+			cursor: pointer;
+			transition: all 0.2s ease-in-out;
+			text-decoration: none; /* Textunterstreichung entfernen */
+			margin-right: 8px; /* Abstand zwischen den Buttons hinzufügen */
+		}
+
+		.material-button:hover {
+			background-color: #1976d2;
+		}
+
+		.material-button:focus {
+			outline: none;
+			box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.4);
+		}
+
+		.material-button:active {
+			background-color: #0d47a1;
+		}
+
+		.material-button.disabled {
+			opacity: 0.5;
+			cursor: default;
+		}
+
+		.material-button.disabled:hover {
+			background-color: #2196f3;
+		}
+
+		.material-button.disabled:focus {
+			box-shadow: none;
+		}
+
+		.material-button .material-icon {
+			position: absolute;
+			top: 0;
+			left: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+			padding-left: 8px;
+			font-size: 18px;
+		}
+
+		.material-button.material-icon-right .material-icon {
+			left: auto;
+			right: 0;
+			padding-left: 0;
+			padding-right: 8px;
+		}
+
+
+	</style>
+<body>
+	<header class="mdc-top-app-bar">
+			<div class="mdc-top-app-bar__row">
+					<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+							<span class="mdc-top-app-bar__title">Internet Messung</span>
+					</section>
+			</div>
+	</header>
+	<br>
+	<br>
+	<br>
+	<div class="container">
+		<div class="row">
+			<div class="col s12">
+				<a href="index.html" class="material-button" aria-label="Alternative HTML-Seite">Aktuelle Werte</a>
+				<a href="alt.html" class="material-button" aria-label="Alternative HTML-Seite">Alte Fritzbox</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 m6 l4">
+				<h4>Dateien im Verzeichnis:</h4>
+				<ul id="file-list" class="collection"></ul>
+			</div>
+			<div class="col s12 m6 l8">
+				<h4>Dateiinhalt:</h4>
+				<textarea id="file-content" class="code-editor"></textarea>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Materialize JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<!-- Highlight.js für die Syntaxhervorhebung -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+	<script>hljs.highlightAll();</script>
+	<script>
+		$(document).ready(function() {
+			// AJAX-Aufruf, um das Verzeichnis abzurufen und die Liste zu erstellen
+			$.ajax({
+				url: "mychart/",
+				success: function(data) {
+					$(data).find("a[href$='.csv']").each(function() { // Nur Dateien mit .csv-Endung anzeigen
+						var filename = $(this).text();
+						var filepath = "mychart/" + filename;
+						// Hinzufügen eines Links zur Datei in die Liste
+						$("#file-list").append("<a href='#' class='collection-item' data-filepath='" + filepath + "'>" + filename + "</a>");
+					});
+				}
+			});
+
+			// Wenn der Benutzer auf einen Dateilink klickt, den Inhalt der Datei in die Textbox laden
+			$(document).on("click", "#file-list a", function(e) {
+				e.preventDefault();
+				var filepath = $(this).data("filepath");
+				$.ajax({
+					url: filepath,
+					success: function(data) {
+						$("#file-content").val(data);
+						hljs.highlightBlock($("#file-content")[0]);
+					}
+				});
+			});
+		});
+	</script>
+</body>
+</html>
